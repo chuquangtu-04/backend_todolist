@@ -1,11 +1,34 @@
+/* eslint-disable no-console */
 import express from 'express'
+import { env } from './config/environment'
+import { APIs_v1 } from './routes/v1'
+import { CONNECT_DB } from '../build/src/config/mongodb'
+import cors from 'cors'
 const app = express()
-const port = 3000
 
-app.get('/', (req, res) => {
-  res.send('<h1>Hello Word</h1>')
-})
+const START_SERVER = () => {
+  app.get('/', (req, res) => {
+    res.send('<h1>Đây là TodoApp</h1>')
+  })
 
-app.listen(port, () => {
-  console.log(`Example app listening on port http://localhost:${port}`)
-})
+  app.use(express.json())
+
+  // ✅ Cho phép tất cả origin (dành cho dev)
+  app.use(cors())
+
+  app.use('/v1', APIs_v1)
+
+  if (env.BUILD_MODE === 'production') {
+    app.listen(process.env.PORT, () => {
+      console.log(`Hello ${env.AUTHOR} I am running at ${ process.env.PORT } on Production`)
+    })} else {
+    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, () => {
+      console.log(`Hello ${env.AUTHOR} I am runing at ${env.LOCAL_DEV_APP_HOST}:${env.LOCAL_DEV_APP_PORT} on local Dev `)
+    })
+  }
+}
+CONNECT_DB()
+  .then(() => { console.log('Connected  to mongoDB atlas!')})
+  .then(() => START_SERVER())
+  .catch(error => console.error(error))
+
