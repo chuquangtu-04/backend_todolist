@@ -52,4 +52,21 @@ const updateTask = async (id, reqBody) => {
     throw new Error(error)
   }
 }
-export const taskService = { createNew, getTasks, deleteTask, updateTask }
+const searchTask = async (queryFilters) => {
+  try {
+    const res = await taskModel.searchTask(queryFilters)
+    const result = []
+    res.forEach(task => (
+      result.push({
+        _id: task._id,
+        value: task.taskName,
+        label: task.taskName
+      })
+    ))
+    return result
+  } catch (error) {
+    console.error('Lỗi khi gọi Service Update Task', error)
+    throw new Error(error)
+  }
+}
+export const taskService = { createNew, getTasks, deleteTask, updateTask, searchTask }

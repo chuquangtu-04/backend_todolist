@@ -43,4 +43,16 @@ const updateTask = async (req, res) => {
     res.status(500).json({ message: 'Lỗi hệ thống' })
   }
 }
-export const taskController = { createNew, fetchTasks, deleteTask, updateTask }
+
+const searchTask = async (req, res) => {
+  try {
+    const { q } = req.query
+    const queryFilters = q
+    const searchTask = await taskService.searchTask(queryFilters)
+    res.status(StatusCodes.OK).json(searchTask)
+  } catch (error) {
+    console.error('Lỗi khi gọi Controller Search Task', error)
+    res.status(500).json({ message: 'Lỗi hệ thống' })
+  }
+}
+export const taskController = { createNew, fetchTasks, deleteTask, updateTask, searchTask }

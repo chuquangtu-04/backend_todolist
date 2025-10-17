@@ -2,7 +2,7 @@
 import express from 'express'
 import { env } from './config/environment'
 import { APIs_v1 } from './routes/v1'
-import { CONNECT_DB } from '../build/src/config/mongodb'
+import { CONNECT_DB } from '~/config/mongodb'
 import cors from 'cors'
 const app = express()
 
@@ -14,7 +14,7 @@ const START_SERVER = () => {
   app.use(express.json())
 
   // ✅ Cho phép tất cả origin (dành cho dev)
-  app.use(cors())
+  app.use(cors({ origin: 'http://localhost:5173' }))
 
   app.use('/v1', APIs_v1)
 
